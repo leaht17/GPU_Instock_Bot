@@ -32,3 +32,9 @@ The GPU InStock Bot will then periodically scrape the web to look for GPUs in st
         - urls.py defines the URL declarations for the app
         - views.py defines the webpage renderings that will be utilized by the app
     - manage.py drives the Django webserver's operation and allows the developer to interact with the service
+   
+- The Weekly_Reports folder contains a separate markdown document for each weekly summary.
+
+- The GPU_Scrapers folder is where the .py files for each separate website specific GPU stock webscraper is stored. Newegg, Best Buy, etc.
+
+- The requirements.txt file will contain our Python dependencies
