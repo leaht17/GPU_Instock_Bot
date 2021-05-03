@@ -3,6 +3,8 @@
 <title>CSE 403 - GPU Instock Bot</title>
 <link rel="icon" href="https://image.flaticon.com/icons/png/512/1088/1088744.png">
 
+
+
 <style>
 #cent, #usub {
     background-color: white;
@@ -89,18 +91,21 @@ p:hover {
 }
 </style>
 
+{% block content %}
+    {% if user.is_authenticated %}
+
 <link rel="preconnect" href="https://fonts.gstatic.com">
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery.mixitup/latest/jquery.mixitup.min.js"></script>
 </head>
 <body>
-    
     <div id=cent>
         <div class="nav">
             <img src="https://image.flaticon.com/icons/png/512/1088/1088744.png" width="50em" align="left"/>
             <button class="subscribe" onclick="subscribe()">&nbsp;&nbsp;Subscribe&nbsp;&nbsp;</button><br><br><br>
-            <button class="unsubscribe" onclick="unSubscribe()">Unsubscribe</button>
+            <button class="unsubscribe"
+ onclick="unSubscribe()">Unsubscribe</button>
         </div>
 
         <table>
@@ -139,7 +144,7 @@ p:hover {
         <center>
             <h1>Unsubscribe From GPU Notifications</h1>
             <h4>
-                Note that unsubscribing deletes all the notifications under this email. 
+                Note that unsubscribing deletes all the notifications under this email.
                 Do you want to remove the following subscriptions?
             </h4>
             <form action="/action_page.php">
@@ -149,8 +154,15 @@ p:hover {
             <input type="button" onclick='printUsub()' value="Unsubscribe"/>
         </center>
     </div>
+    <p><a href="{% url 'logout' %}">Log Out</a></p>
+</body>
 
-        
+{% else %}
+    <p>You are not logged in</p>
+    <a href="{% url 'login' %}">Log In</a>
+    <a href="{% url 'signup' %}">Sign Up</a>
+    {% endif %}
+{% endblock %}
 <script>
     function printChecked() {
 		var items=document.getElementsByName('gpu');
