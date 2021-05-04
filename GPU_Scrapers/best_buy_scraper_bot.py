@@ -1,4 +1,5 @@
 from bs4 import BeautifulSoup
+import bs4
 import requests
 import time
 import json
@@ -9,7 +10,6 @@ URLS = ["https://www.bestbuy.com/site/nvidia-geforce-rtx-3070-8gb-gddr6-pci-expr
     "https://www.bestbuy.com/site/evga-nvidia-geforce-rtx-3060-ti-ftw3-gaming-8gb-gddr6-pci-express-4-0-graphics-card/6444444.p?skuId=6444444",
     "https://www.bestbuy.com/site/nvidia-geforce-rtx-3060-ti-8gb-gddr6-pci-express-4-0-graphics-card-steel-and-black/6439402.p?skuId=6439402",
     "https://www.bestbuy.com/site/msi-nvidia-geforce-rtx-3070-ventus-3x-oc-bv-8gb-gddr6-pci-express-4-0-graphics-card/6438278.p?skuId=6438278",
-    "https://www.bestbuy.com/site/pny-geforce-gt-710-2gb-pci-express-2-0-graphics-card-black/5092306.p?skuId=5092306",
     "https://www.bestbuy.com/site/gigabyte-nvidia-geforce-rtx-3070-aorus-master-8gb-gddr6-pci-express-4-0-graphics-card/6439384.p?skuId=6439384",
     "https://www.bestbuy.com/site/asus-nvidia-geforce-tuf-rtx3070-8gb-gddr6-pci-express-4-0-graphics-card-black/6439128.p?skuId=6439128",
     "https://www.bestbuy.com/site/gigabyte-nvidia-geforce-rtx-3060-gaming-oc-12gb-gddr6-pci-express-4-0-graphics-card/6454688.p?skuId=6454688",
@@ -91,7 +91,7 @@ def check_item_in_stock(page_html):
     soup = BeautifulSoup(page_html, 'html.parser')
     product_inventory = soup.findAll("div", {"class": "fulfillment-add-to-cart-button"})
     product_status = next(product_inventory[0].find('button').descendants)
-    return product_status != "Sold Out" and product_status != "Coming Soon" and product_status != "Check Stores"
+    return type(product_status) != bs4.element.NavigableString
 
 # Lets the user know whether the item for the provided newegg url is in stock
 # Returns "In stock or out of stock"
