@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
 from .forms import SubscriberCreationForm, SubscriberChangeForm
-from .models import Subscriber
+from .models import Subscriber, GPU
 
 
 # Register your models here.
@@ -15,3 +15,4 @@ class SubscriberAdmin(UserAdmin):
 
 
 admin.site.register(Subscriber, SubscriberAdmin)
+admin.site.register(GPU)
