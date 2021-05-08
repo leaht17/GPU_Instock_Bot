@@ -194,6 +194,8 @@ def query_module(url):
 
 # args: takes in a url linking to a Best Buy GPU
 #       a stock_message containing the GPU sku_title and letting them know it's in stock
+#       twilio Client
+#       a phone number to send the in stock message to
 def send_text(url, stock_message, client, phone_number):
     # A test number to set phone number to: +12532859052
 
