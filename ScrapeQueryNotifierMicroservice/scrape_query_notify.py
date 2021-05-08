@@ -227,7 +227,7 @@ def notifier_module(list_of_emails_and_phone_numbers, url, stock_message, client
 
     # Loop through and send the text messages
     for phone_number in phone_numbers:
-        send_text(url, stock_message, client)
+        send_text(url, stock_message, client, phone_number)
 
     # Loop through and send the emails
 
@@ -299,7 +299,7 @@ def main():
                 list_of_emails_and_phone_numbers = query_module(url)
 
                 # Send the messages to notify the users that this GPU is in stock
-                notifier_module(list_of_emails_and_phone_numbers, url, stock_message)
+                notifier_module(list_of_emails_and_phone_numbers, url, stock_message, client)
 
 
                 # Set to true so we know not to msg them multiple times for this stock cycle
