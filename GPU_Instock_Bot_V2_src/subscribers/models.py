@@ -1,0 +1,15 @@
+from django.db import models
+from django.db.models import CASCADE
+from phonenumber_field.modelfields import PhoneNumberField
+
+# Create your models here.
+from gpus.models import GPU
+
+
+class Subscriber(models.Model):
+    email = models.EmailField(unique=True)
+    phone = PhoneNumberField(unique=True)
+    gpus = models.ManyToManyField(GPU, through='subscriptions.Subscription')
+
+    def __str__(self):
+        return self.email.__str__() + "::" + self.phone.__str__()
