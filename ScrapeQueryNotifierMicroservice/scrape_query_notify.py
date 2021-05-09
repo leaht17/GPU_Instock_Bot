@@ -232,13 +232,15 @@ def query_module(url):
 #       a stock_message containing the GPU sku_title and letting them know it's in stock
 #       twilio Client
 #       a phone number to send the in stock message to
-def send_text(url, stock_message, client, phone_number):
+#       Magic number for testing is : '+15005550006'
+#       Our live phone number: +16782632233
+def send_text(url, stock_message, client, phone_number, sender_phone_num = '+15005550006'):
     # A test number to set phone number to: +12532859052
 
     message = client.messages \
                     .create(
                          body= stock_message + "\n\n" + url,
-                         from_='+15005550006',
+                         from_= sender_phone_num,
                          to='+1' + phone_number
                      )
      print(message.sid)
@@ -262,14 +264,18 @@ def send_email(url, stock_message):
 #       url: the Best Buy URL to link within the message body
 #       stock_message: a stock_message containing the GPU sku_title and letting them know it's in stock
 #       client: for twilio client connection
-def notifier_module(list_of_emails, list_of_phone_numbers, url, stock_message, client):
+def notifier_module(list_of_emails, list_of_phone_numbers, url, stock_message, client, test=False):
     # Loop through and send the emails
     for email in list_of_emails:
         send_email(url, stock_message)
-    
-    # Loop through and send the text messages
-    for phone_number in list_of_phone_numbers:
-        send_text(url, stock_message, client, phone_number)
+    if test:
+        # Loop through and send the text messages while using magic number for testing
+        for phone_number in list_of_phone_numbers:
+            send_text(url, stock_message, client, phone_number)
+    else:
+        # Loop through and send the text messages
+        for phone_number in list_of_phone_numbers:
+            send_text(url, stock_message, client, phone_number, sender_phone_num='+16782632233')
 
 
 
