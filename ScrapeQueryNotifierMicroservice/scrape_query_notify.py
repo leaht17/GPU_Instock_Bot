@@ -202,7 +202,7 @@ def send_text(url, stock_message, client, phone_number):
     message = client.messages \
                     .create(
                          body= stock_message + "\n\n" + url,
-                         from_='+16782632233',
+                         from_='+15005550006',
                          to='+1' + phone_number
                      )
      print(message.sid)
