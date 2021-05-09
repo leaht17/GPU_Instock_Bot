@@ -182,12 +182,48 @@ def scraper(browser, url):
 ######################################################################################################
 ######################################################################################################
 
+# TODO: this module is 90% done, but it has not been tested and place holder variables need to be replaced with the correct variable
+
 # args: takes in a url linking to a Best Buy GPU
 # returns: a list of emails and phone numbers from the db that were
 #          linked to wanting to be notified about this specific GPU being in stock
 def query_module(url):
+    """ query subscribers matching the url """
+    conn = None
+    list_of_emails = []
+    list_of_phone_numbers = []
 
-    pass
+    try:
+        # Initialize db stuff
+        conn = psycopg2.connect(database="INSERT_DATABASE_NAME_HERE", user="INSERT_USERNAME_HERE", password="INSERT_PASSWORD_HERE_IF_ANY_OTHERWISE_EMPTY_STRING", host=127.0.0.1, port="5432") # TODO: put the right variables here
+        print("Database opened successfully")
+
+        # Open a cursor to perform database operations
+        cur = conn.cursor()
+
+        # Query the database and obtain data as Python objects
+        # TODO: change INSERT_DATABASE_NAME_HERE to whatever the name of the database is
+        psql_select_query = "SELECT subscriber_email, subscriber_phone FROM INSERT_DATABASE_NAME_HERE WHERE url = URL"
+        cur.execute(psql_select_query)
+        row = cur.fetchone()
+
+        while row is not None:
+            if not row[0]: # this just checks if email is empty
+                list_of_emails.append(row[0])
+
+            if not row[1]: # likewise if phone_number is empty
+                list_of_phone_numbers.append(row[1])
+
+            row = cur.fetchone()
+
+        cur.close()
+    except (Exception, psycopg2.Error) as error:
+        print("Error while fetching data from PostgreSQL", error)
+    finally:
+        if conn is not None:
+            conn.close()
+
+    return list_of_emails, list_of_phone_numbers
 
 ######################################################################################################
 ######################################################################################################
@@ -207,8 +243,11 @@ def send_text(url, stock_message, client, phone_number):
                      )
      print(message.sid)
 
-## args: takes in a url linking to a Best Buy GPU
-#       a stock_message containing the GPU sku_title and letting them know it's in stock
+######################################################################################################
+######################################################################################################
+
+# args: url: takes in a url linking to a Best Buy GPU
+#        stock_message: a stock_message containing the GPU sku_title and letting them know it's in stock
 def send_email(url, stock_message):
     pass
 
@@ -218,23 +257,19 @@ def send_email(url, stock_message):
 ######################################################################################################
 
 # sends notifies from the emails and phone numbers of the gpu being in stock
-# args: takes in a list of emails and phone numbers
-#       the Best Buy URL to link within the message body
-#       a stock_message containing the GPU sku_title and letting them know it's in stock
-#       the twilio client
-def notifier_module(list_of_emails_and_phone_numbers, url, stock_message, client):
-    # Separate the list of emails & phone numbers
-    phone_numbers = []
-    emails = []
-
-    # Loop through and send the text messages
-    for phone_number in phone_numbers:
-        send_text(url, stock_message, client, phone_number)
-
+# args: list of email addresses
+#       list of phone numbers
+#       url: the Best Buy URL to link within the message body
+#       stock_message: a stock_message containing the GPU sku_title and letting them know it's in stock
+#       client: for twilio client connection
+def notifier_module(list_of_emails, list_of_phone_numbers, url, stock_message, client):
     # Loop through and send the emails
-
-
-    pass
+    for email in list_of_emails:
+        send_email(url, stock_message)
+    
+    # Loop through and send the text messages
+    for phone_number in list_of_phone_numbers:
+        send_text(url, stock_message, client, phone_number)
 
 
 
@@ -298,10 +333,10 @@ def main():
             if (not is_msg_for_gpu_sent_for_this_stock_cycle[url] and is_gpu_in_stock):
 
 
-                list_of_emails_and_phone_numbers = query_module(url)
+                list_of_emails, list_of_phone_numbers = query_module(url)
 
                 # Send the messages to notify the users that this GPU is in stock
-                notifier_module(list_of_emails_and_phone_numbers, url, stock_message, client)
+                notifier_module(list_of_emails, list_of_phone_numbers, url, stock_message, client)
 
 
                 # Set to true so we know not to msg them multiple times for this stock cycle
