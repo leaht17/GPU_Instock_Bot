@@ -203,7 +203,7 @@ def query_module(url):
 
     try:
         # Initialize db stuff
-        conn = psycopg2.connect(database="INSERT_DATABASE_NAME_HERE", user="INSERT_USERNAME_HERE", password="INSERT_PASSWORD_HERE_IF_ANY_OTHERWISE_EMPTY_STRING", host=127.0.0.1, port="5432") # TODO: put the right variables here
+        conn = psycopg2.connect(database="INSERT_DATABASE_NAME_HERE", user="INSERT_USERNAME_HERE", password="INSERT_PASSWORD_HERE_IF_ANY_OTHERWISE_EMPTY_STRING", host="127.0.0.1", port="5432") # TODO: put the right variables here
         print("Database opened successfully")
 
         # Open a cursor to perform database operations
@@ -251,7 +251,7 @@ def send_text(url, stock_message, client, phone_number, sender_phone_num = '+150
                          from_= sender_phone_num,
                          to='+1' + phone_number
                      )
-     print(message.sid)
+    print(message.sid)
 
 ######################################################################################################
 ######################################################################################################
@@ -368,15 +368,15 @@ def main():
     service = build('gmail', 'v1', credentials=creds)
 
     # Initialize db stuff
-    con = psycopg2.connect(database="postgres", user="postgres", password="", host=127.0.0.1, port="5432") # TODO what is user and password once  I set up
+    con = psycopg2.connect(database="postgres", user="postgres", password="", host="127.0.0.1", port="5432") # TODO what is user and password once  I set up
     print("Database opened successfully")
 
     # Initialize twilio
     # Your Account Sid and Auth Token from twilio.com/console and set the environment variables.
     # See http://twil.io/secure
     account_sid = os.environ["AC9d5de46a73c27da46f9c0de98f668e20"]
-    auth_token = os.environ['0abde93880a3a6d1f91d475746cfebd8']
-    client = Client('AC9d5de46a73c27da46f9c0de98f668e20', '0abde93880a3a6d1f91d475746cfebd8') #hardcode test
+    auth_token = os.environ['0000ab4bffd746f96c75e19fe9a52079']
+    client = Client('AC9d5de46a73c27da46f9c0de98f668e20', '0000ab4bffd746f96c75e19fe9a52079') #hardcode test
 
     # Loop through the URLS and check individually if each is in stock
 
