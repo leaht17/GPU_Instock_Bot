@@ -8,6 +8,14 @@ from random import randint
 import psycopg2
 import os
 import twilio
+from __future__ import print_function
+import os.path
+from googleapiclient.discovery import build
+from google_auth_oauthlib.flow import InstalledAppFlow
+from google.auth.transport.requests import Request
+from google.oauth2.credentials import Credentials
+from email.mime.text import MIMEText
+import base64
 
 RUNNING = True
 
@@ -248,12 +256,48 @@ def send_text(url, stock_message, client, phone_number, sender_phone_num = '+150
 ######################################################################################################
 ######################################################################################################
 
-# args: url: takes in a url linking to a Best Buy GPU
+#Send an email message.
+#Args:
+#service: Authorized Gmail API service instance.
+#user_id: User's email address. The special value "me"
+#       can be used to indicate the authenticated user.
+#       message: Message to be sent
+#        url: takes in a url linking to a Best Buy GPU
 #        stock_message: a stock_message containing the GPU sku_title and letting them know it's in stock
-def send_email(url, stock_message):
-    pass
+#    Returns: Sent Message.
 
+def send_email(service, url, stock_message, recipient, user_id = 'me'):
+    message = create_email(recipient, "GPU Instock Notification", stock_message + "\n\n" + url)
+    try:
+        message = (service.users().messages().send(userId=user_id, body=message).execute())
+        msgID = 'Message Id: %s' % message['id']
+        print(msgID)
+        return message
+    except errors.HttpError or error:
+        print('An error occurred: %s' % error)
 
+#Encode in base64url strings
+#args: sender: takes in string of sender (keep default)
+#       to: recipient email string
+#       subject: string with subject of email
+#       message_text: string with body text
+def create_email(to, subject, message_text, sender = "gpuinstockbot@gmail.com"):
+  """Create a message for an email.
+
+  Args:
+    sender: Email address of the sender.
+    to: Email address of the receiver.
+    subject: The subject of the email message.
+    message_text: The text of the email message.
+
+  Returns:
+    An object containing a base64url encoded email object.
+  """
+  message = MIMEText(message_text)
+  message['to'] = to
+  message['from'] = sender
+  message['subject'] = subject
+  return {'raw': base64.urlsafe_b64encode(message.as_string().encode()).decode()}
 
 ######################################################################################################
 ######################################################################################################
@@ -264,10 +308,11 @@ def send_email(url, stock_message):
 #       url: the Best Buy URL to link within the message body
 #       stock_message: a stock_message containing the GPU sku_title and letting them know it's in stock
 #       client: for twilio client connection
-def notifier_module(list_of_emails, list_of_phone_numbers, url, stock_message, client, test=False):
+#       service: from gmail connection establishment
+def notifier_module(service, list_of_emails, list_of_phone_numbers, url, stock_message, client, test=False):
     # Loop through and send the emails
     for email in list_of_emails:
-        send_email(url, stock_message)
+        send_email(service, url, stock_message, email)
     if test:
         # Loop through and send the text messages while using magic number for testing
         for phone_number in list_of_phone_numbers:
@@ -302,7 +347,25 @@ def main():
         is_msg_for_gpu_sent_for_this_stock_cycle[url] = False
 
     # Initialize gmail stuff
+    creds = None
+    # The file token.json stores the user's access and refresh tokens, and is
+    # created automatically when the authorization flow completes for the first
+    # time.
+    if os.path.exists('token.json'):
+        creds = Credentials.from_authorized_user_file('token.json', SCOPES)
+    # If there are no (valid) credentials available, let the user log in.
+    if not creds or not creds.valid:
+        if creds and creds.expired and creds.refresh_token:
+            creds.refresh(Request())
+        else:
+            flow = InstalledAppFlow.from_client_secrets_file(
+                'client_secret.json', SCOPES)
+            creds = flow.run_local_server(port=0)
+        # Save the credentials for the next run
+        with open('token.json', 'w') as token:
+            token.write(creds.to_json())
 
+    service = build('gmail', 'v1', credentials=creds)
 
     # Initialize db stuff
     con = psycopg2.connect(database="postgres", user="postgres", password="", host=127.0.0.1, port="5432") # TODO what is user and password once  I set up

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+
+{% load static %}
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>GPU In-stock Bot</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="all,follow">
+    <!-- Bootstrap CSS-->
+    <link rel="stylesheet" href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}">
+    <!-- Google fonts-->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Pacifico&amp;display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700">
+    <!-- theme stylesheet-->
+    <link rel="stylesheet" href="{% static 'css/style.default.css' %}" id="theme-stylesheet">
+    <!-- Custom stylesheet - for your changes-->
+    <link rel="stylesheet" href="{% static 'css/custom.css' %}">
+    <!-- Favicon-->
+    <link rel="shortcut icon" href="favicon.png">
+</head>
+<body>
+<section style="background: url(img/paris.jpg)" class="page-holder position-relative d-flex justify-content-between flex-column">
+    <div class="overlay"></div>
+    <div class="container text-center text-white position-relative pt-lg-5 my-5">
+        <h1 class="text-shadow mb-5">GPU In-stock Bot</h1>
+        <p class="h2 font-family-base font-weight-light text-shadow">Never miss when a GPU is in stock ever again.</p>
+    </div>
+    <div class="container text-white position-relative text-center py-5">
+        <p class="h2 font-family-base font-weight-light mb-4 text-shadow">Join our mailing list and we will notify you once your selected graphics card is in stock!</p>
+        <div class="row">
+            <div class="col-lg-5 mx-auto">
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <input name="subscribe" type="submit" value="Subscribe" class="btn btn-primary letter-spacing-3 mb-2">
+                    {#                  <input name="unsubscribe" type="submit" value="Unsubscribe">#}
+                </form>
+            </div>
+        </div>
+    </div>
+    <footer class="py-4 position-relative w-100 text-small">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-6 text-center text-white text-sm-left">
+                    <p>CSE403 Spring 2021 GPUInstockBot </p>
+                </div>
+                <div class="col-sm-6 text-center text-white text-sm-right">
+                    <p class="mb-1">Original Design by  <a href="https://bootstrapious.com/coming-soon-themes" class="text-white">Bootstrapious</a></p>
+                </div>
+            </div>
+        </div>
+    </footer>
+</section>
+<!-- JavaScript files-->
+<script src="vendor/jquery/jquery.min.js"></script>
+<script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<!-- FontAwesome CSS - loading as last, so it doesn't block rendering-->
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+</body>
+</html>
