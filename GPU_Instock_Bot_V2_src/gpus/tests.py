@@ -4,13 +4,13 @@ from django.db import models
 
 from gpus.models import GPU
 
+
 class GPUTestCase(TestCase):
     def test_set_up(self):
         # Set up non-modified objects used by all test methods
         GPU.objects.create(url="url", alias="alias")
 
-
-    myplandef testURLMaxLength(self):
+    def testURLMaxLength(self):
         gpu = GPU.objects.create(url="url", alias="alias")
         max_length = gpu._meta.get_field('url').max_length
         self.assertEqual(max_length, 512)
