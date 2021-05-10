@@ -18,6 +18,12 @@ class GPU(models.Model):
     # brand = models.CharField(max_length=256)
     gpu_subscription = models.ForeignKey('subscriptions.Subscription', on_delete=PROTECT, blank=True, null=True)
 
+    def getURL(self):
+        return self.url
+
+    def getAlias(self):
+        return self.alias
+
     def __str__(self):
         return self.alias
 

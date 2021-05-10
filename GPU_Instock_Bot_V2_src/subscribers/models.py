@@ -5,7 +5,6 @@ from phonenumber_field.modelfields import PhoneNumberField
 # Create your models here.
 from gpus.models import GPU
 
-
 class Subscriber(models.Model):
     email = models.EmailField(unique=True)
     phone = PhoneNumberField(unique=True)

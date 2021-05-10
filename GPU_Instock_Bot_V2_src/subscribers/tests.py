@@ -5,11 +5,13 @@
 from django.test import TestCase
 from django.db import models
 
-from subscribers.models import Subscriber
+# from subscribers.models import Subscriber
+from .models import Subscriber
 
 
-class SubscribersTestCase(TestCase):
-    def testSubscriberUniqueness(self):
+class TestSubscriber(TestCase):
+
+    def test_subscriber_uniqueness(self):
         # Create single subscriber
         s1 = Subscriber.objects.create(email="milan@uw.edu", phone="1234567890")
 
