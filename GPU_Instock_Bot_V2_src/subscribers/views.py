@@ -19,15 +19,15 @@ def subscriptionview(request):
             # process the data in form.cleaned_data as required
             # ...
             # redirect to a new URL:
-            counter = 0
-            gpu_list = form.cleaned_data['gpus']
-            email = form.cleaned_data['email']
-            phone = form.cleaned_data['phone']
-            print(email)
-            print(phone)
-            print(gpu_list)
-            for gpu in gpu_list:
-                gpu.save()
+            # counter = 0
+            # gpu_list = form.cleaned_data['gpus']
+            # email = form.cleaned_data['email']
+            # phone = form.cleaned_data['phone']
+            # print(email)
+            # print(phone)
+            # print(gpu_list)
+            # for gpu in gpu_list:
+            #     gpu.save()
             form.save()
             return HttpResponseRedirect('/')
 
