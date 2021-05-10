@@ -79,14 +79,14 @@ WSGI_APPLICATION = 'dashboard.wsgi.application'
 
 DATABASES = {
     "default": {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-        # "ENGINE": "django.db.backends.postgresql_psycopg2",
-        # "NAME": "andylee", #When making postgres server, replace with the name u choose
-        # "USER": "andylee", #Same here, replace with name u choose
-        # "PASSWORD": "password",
-        # "HOST": "localhost",
-        # "PORT": "5432", #When not specified when creating server, default is 5432.
+        #'ENGINE': 'django.db.backends.sqlite3',
+        #'NAME': BASE_DIR / 'db.sqlite3',
+        "ENGINE": "django.db.backends.postgresql_psycopg2",
+        "NAME": "test", #When making postgres server, replace with the name u choose
+        "USER": "postgres", #Same here, replace with name u choose
+        "PASSWORD": "password",
+        "HOST": "localhost",
+        "PORT": "5432", #When not specified when creating server, default is 5432.
     }
 }
 
