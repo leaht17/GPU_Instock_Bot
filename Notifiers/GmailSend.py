@@ -79,6 +79,6 @@ def main():
     msg = create_message("gpuinstockbot@gmail.com", "gpuinstockbot@gmail.com", "Test", "Hello")
     send_message(service, 'me', msg)
 
-
-if __name__ == '__main__':
-    main()
+#
+#if __name__ == '__main__':
+#    main()
