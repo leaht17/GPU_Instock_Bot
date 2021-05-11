@@ -214,7 +214,7 @@ def query_module(url):
         # subscribers_subscriber: 3 columns: sub_id, email & phone
         # subscriptions_subscription: 3  columns: sus_id, gpu_id, sub_id
         # gpus_gpu: 3 columns: gpu_id, URL, alias (plain english name)
-        psql_select_query = "SELECT DISTINCT subscriber.email, subscriber.phone FROM subscribers_subscriber AS subscriber, gpus_gpu AS gpu, subscriptions_subscription AS subscription WHERE subscriber.id = subscription.sub_subscriber_id, "
+        psql_select_query = 'SELECT DISTINCT subscribers.email, subscribers.phone FROM gpus_gpu as gpus, subscribers_subscriber as subscribers, subscriptions_subscription as subscriptions WHERE subscriptions.sub_gpu_id = gpus.id AND subscriptions.sub_subscriber_id = subscribers.id AND gpus.url = "' + url + '";'
         cur.execute(psql_select_query)
         row = cur.fetchone()
 
