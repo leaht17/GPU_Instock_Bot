@@ -211,7 +211,10 @@ def query_module(url):
 
         # Query the database and obtain data as Python objects
         # TODO: change INSERT_DATABASE_NAME_HERE to whatever the name of the database is
-        psql_select_query = "SELECT subscriber_email, subscriber_phone FROM INSERT_DATABASE_NAME_HERE WHERE url = URL"
+        # subscribers_subscriber: 3 columns: sub_id, email & phone
+        # subscriptions_subscription: 3  columns: sus_id, gpu_id, sub_id
+        # gpus_gpu: 3 columns: gpu_id, URL, alias (plain english name)
+        psql_select_query = 'SELECT DISTINCT subscribers.email, subscribers.phone FROM gpus_gpu as gpus, subscribers_subscriber as subscribers, subscriptions_subscription as subscriptions WHERE subscriptions.sub_gpu_id = gpus.id AND subscriptions.sub_subscriber_id = subscribers.id AND gpus.url = "' + url + '";'
         cur.execute(psql_select_query)
         row = cur.fetchone()
 
