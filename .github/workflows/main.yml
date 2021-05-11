@@ -48,4 +48,7 @@ jobs:
       - name: Run Django migrations
         run: python GPU_Instock_Bot_V2_src/manage.py migrate
       - name: Run Django tests
-        run: python GPU_Instock_Bot_V2_src/manage.py test
+        run: |
+          python GPU_Instock_Bot_V2_src/manage.py test gpus
+          python GPU_Instock_Bot_V2_src/manage.py test subscribers
+          python GPU_Instock_Bot_V2_src/manage.py test subscriptions
