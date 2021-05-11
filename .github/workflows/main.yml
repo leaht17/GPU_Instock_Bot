@@ -34,6 +34,6 @@ jobs:
 #    - name: psycopg2 Dependencies
 #      run: sudo apt-get install libpq-dev
     - name: Django Tests
-      run: python manage.py test
+      run: python GPU_Instock_Bot_V2_src/manage.py test
     - name: Django Migrations
-      run: python manage.py migrate
+      run: python GPU_Instock_Bot_V2_src/manage.py migrate
