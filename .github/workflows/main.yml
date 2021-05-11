@@ -53,3 +53,8 @@ jobs:
           python GPU_Instock_Bot_V2_src/manage.py test gpus
           python GPU_Instock_Bot_V2_src/manage.py test subscribers
           python GPU_Instock_Bot_V2_src/manage.py test subscriptions
+      - name: Run Module tests
+        run: |
+          python -m unittest tests/test_best_buy_scraper.py
+          python -m unittest tests/test_notifiers.py
+          python -m unittest tests/test_scraper.py
