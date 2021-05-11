@@ -31,8 +31,8 @@ jobs:
     - name: Test with pytest
       run: |
         pytest
-    - name: psycopg2 Dependencies
-      run: sudo apt-get install libpq-dev
+#    - name: psycopg2 Dependencies
+#      run: sudo apt-get install libpq-dev
     - name: Django Tests
       run: python manage.py test
     - name: Django Migrations
