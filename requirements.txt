@@ -1,4 +1,6 @@
 # Our team will add dependencies as we finalize the libraries and tools needed
+BeautifulSoup4
+python-requests
 django-phonenumber-field[phonenumbers]
 phonenumbers
 psycopg2
