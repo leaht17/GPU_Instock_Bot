@@ -8,7 +8,20 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.5, 3.6, 3.7, 3.8]
+        python-version: [3.5, 3.6, 3.7, 3.8, 3.9]
+
+    services:
+      postgres:
+        image: postgres:12
+        env:
+          POSTGRES_USER: admin
+          POSTGRES_PASSWORD: superuser
+          POSTGRES_DB: gppuinstockbotdb
+        ports:
+          - 5432:5432
+        # needed because the postgres container does not provide a healthcheck
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+
 
     steps:
       - uses: actions/checkout@v2
@@ -32,3 +45,7 @@ jobs:
       - name: Test with pytest
         run: |
           pytest
+      - name: Run Django migrations
+        run: python manage.py migrate
+      - name: Run Django tests
+        run: python manage.py test
