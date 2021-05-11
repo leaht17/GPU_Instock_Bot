@@ -1,4 +1,4 @@
 # Our team will add dependencies as we finalize the libraries and tools needed
-pip install django-phonenumber-field[phonenumbers]
-pip install phonenumbers
-pip install psycopg2
+django-phonenumber-field[phonenumbers]
+phonenumbers
+psycopg2
