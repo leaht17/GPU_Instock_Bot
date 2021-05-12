@@ -10,6 +10,7 @@ from random import randint
 import psycopg2
 import os
 import twilio
+from twilio.rest import Client
 import os.path
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
@@ -145,6 +146,7 @@ URLS = [
         "https://www.bestbuy.com/site/xfx-speedster-qick-319-amd-radeon-rx-6800-16gb-gddr6-pci-express-4-0-gaming-graphics-card-black/6453267.p?skuId=6453267"
     ]
 
+SCOPES = ['https://www.googleapis.com/auth/gmail.send']
 # Global
 
 ######################################################################################################
@@ -378,8 +380,8 @@ def main():
     # Initialize twilio
     # Your Account Sid and Auth Token from twilio.com/console and set the environment variables.
     # See http://twil.io/secure
-    account_sid = os.environ["AC9d5de46a73c27da46f9c0de98f668e20"]
-    auth_token = os.environ['0000ab4bffd746f96c75e19fe9a52079']
+    #account_sid = os.environ["AC9d5de46a73c27da46f9c0de98f668e20"]
+    #auth_token = os.environ['0000ab4bffd746f96c75e19fe9a52079']
     client = Client('AC9d5de46a73c27da46f9c0de98f668e20', '0000ab4bffd746f96c75e19fe9a52079') #hardcode test
 
     # Loop through the URLS and check individually if each is in stock
