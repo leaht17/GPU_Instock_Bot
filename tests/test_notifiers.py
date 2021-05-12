@@ -1,7 +1,7 @@
 import unittest
 import sys
 import os
-sys.path.append(os.path.dirname(os.path.abspath('ScrapeQueryNotifierMicroservice\scrape_query_notify.py')))
+sys.path.append(os.path.dirname(os.path.abspath('ScrapeQueryNotifierMicroservice/scrape_query_notify.py')))
 from scrape_query_notify import *
 from twilio.rest import Client
 

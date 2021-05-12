@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 import requests
@@ -8,7 +10,6 @@ from random import randint
 import psycopg2
 import os
 import twilio
-from __future__ import print_function
 import os.path
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
