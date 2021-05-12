@@ -340,7 +340,7 @@ def main():
     chromeOptions.headless = headless
 
     print("Opening browser...")
-    browser = webdriver.Chrome(executable_path="./drivers/chromedriver", options=chromeOptions)
+    browser = webdriver.Chrome(executable_path="./drivers/chromedriver_mac", options=chromeOptions)
 
     print("Running in background, first page may take longer to load than subsequent pages")
     print("Press CTRL-C to exit")
