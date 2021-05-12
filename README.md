@@ -41,4 +41,7 @@ The GPU InStock Bot will then periodically scrape the web to look for GPUs in st
 
 
 # Installation Process:
+## Mac Process:
 1. Clone the respository
+2. Open the terminal and change to to root directory of this github repo
+3. Run the command 'chmod u+x setup.sh' within the terminal
