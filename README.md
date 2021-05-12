@@ -52,3 +52,12 @@ The GPU InStock Bot will then periodically scrape the web to look for GPUs in st
 ## Windows Process:
 1. Buy a Mac
 2. Refer to Mac Installation Process
+
+# Mac user instructions:
+1. Start the postgresql app. The setup script should have created a database with its credentials.
+2. Start the Django app by going to the gpu_instock_bot_v2_src directory and running the command "python manage.py runserver". This will run the django server on default localhost:8000
+3. To view the database using the Django interface, go to localhost:8000/admin to explore our database.
+4. Now that the front end and database is working, you can now run the script by going back to the main directory, going into "scrapequerynotifiermicroservice" and running the command "python scrape_query_notify.py" to run the backend service.
+5. Please use Python 3.5+ to run our service. 
+6. Keep in mind, when testing this service out, the API token for twilio will be expired due to having exposed API keys resulting in a short lifecycle for our authentication tokens. PLEASE reach out via slack and I can reupload a new API token that will be live for about half a day.
+7. Additionally, when first using our backend service on a new system, the Gmail API will go through authentication where it will need approval to send emails from our email. Please contact me via slack for our email credentials so that you can approve yourself (this is a email we made, so theres nothing really private on it and it was made just for this assignment)
