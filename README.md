@@ -38,3 +38,7 @@ The GPU InStock Bot will then periodically scrape the web to look for GPUs in st
 - The GPU_Scrapers folder is where the .py files for each separate website specific GPU stock webscraper is stored. Newegg, Best Buy, etc.
 
 - The requirements.txt file will contain our Python dependencies
+
+
+# Installation Process:
+1. Clone the respository
