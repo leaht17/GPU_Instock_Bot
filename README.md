@@ -46,7 +46,7 @@ The GPU InStock Bot will then periodically scrape the web to look for GPUs in st
 2. Open the terminal and change to the root directory of this github repo
 3. Install virtualenv using the 'pip install virtualenv'
 4. Run the command 'chmod u+x setup.sh' within the terminal
-5. Run the command ./setupMac.sh
+5. Run the command './setup.sh'
 
 
 ## Windows Process:
