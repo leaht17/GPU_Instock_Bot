@@ -32,11 +32,18 @@
         <p class="h2 font-family-base font-weight-light mb-4 text-shadow">Join our mailing list and we will notify you once your selected graphics card is in stock!</p>
         <div class="row">
             <div class="col-lg-5 mx-auto">
+                {% if messages %}
+                <ul class="messages">
+                    {% for message in messages %}
+                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
                 <form method="post">
                     {% csrf_token %}
                     {{ form.as_p }}
                     <input name="subscribe" type="submit" value="Subscribe" class="btn btn-primary letter-spacing-3 mb-2">
-                    {#                  <input name="unsubscribe" type="submit" value="Unsubscribe">#}
+                    <input name="unsubscribe" type="submit" value="Unsubscribe" class="btn btn-primary letter-spacing-3 mb-2">
                 </form>
             </div>
         </div>
