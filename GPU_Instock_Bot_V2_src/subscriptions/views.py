@@ -37,7 +37,7 @@ def subscriptionview(request):
         else:
             return render(request, 'suboverview.html', {'form': form})
 
-        # if email and phone are both empty then scold user
+        # scold user if email and phone are both empty
         if email == '' and phone == '':
             messages.error(request, 'At least one of email or phone is required for un/re/subscription.')
             return render(request, 'suboverview.html', {'form': form})
@@ -46,29 +46,30 @@ def subscriptionview(request):
         else:
             subscriber = Subscriber.objects.filter(Q(email=email) | Q(phone=phone))
 
-        # retrieve number of subscribers with this info, should be <= 2
+        # retrieve number of subscribers with this info (should be <= 2)
         subcount = subscriber.count()
 
-        # if unsubscription request is received then process it
+        # process unsubscription request
         if 'unsubscribe' in request.POST:
             unsubscribe(subcount, request, subscriber)
 
-        # if re/subscription request is received then process it
+        # process re/subscription request
         elif 'subscribe' in request.POST:
             subscribe(subcount, request, subscriber, gpu_list, form, email, phone)
 
     # if a GET (or any other method) we'll create a blank form
     else:
         form = SubscriptionForm()
+
     return render(request, 'suboverview.html', {'form': form})
 
-# Handles unsubscription functionality
+# Handles unsubscription functionality.
 # args: 
 # - subcount: number of subscribers with given info
 # - request: contains subscription/unsubscription data
 # - subscriber: the subscriber associated with given info
 def unsubscribe(subcount, request, subscriber):
-    # if user is not already subscribed then scold user
+    # if not subscribed with given info scold user
     if subcount == 0:
         messages.error(request, 'Unsubscription was unsuccessful! No subscriber information associated with the'
                                 ' provided credential(s) was found in our database.')
@@ -81,7 +82,7 @@ def unsubscribe(subcount, request, subscriber):
                                     'removed from our database')
         print("subscriber deleted")
 
-# Handles subscription functionality
+# Handles subscription functionality.
 # args: 
 # - subcount: number of subscribers with given info
 # - request: contains subscription/unsubscription data
@@ -91,13 +92,13 @@ def unsubscribe(subcount, request, subscriber):
 # - email: user inputted subscription email
 # - phone: user inputted subscription phone number
 def subscribe(subcount, request, subscriber, gpu_list, form, email, phone): 
-    # if gpu list is empty then scold user
+    # if not selected any gpus scold user
     if gpu_list.count() == 0:
         messages.error(request, 'Re/Subscription unsuccessful! You have not selected any GPUs to re/subscribe '
                                 'to.')
         print('no gpus selected')
 
-    # if subscriber does not exist then subscribe them
+    # subscribe new subscriber
     elif subcount == 0:
         # save the form (populates model with data)
         form.save()
@@ -105,7 +106,7 @@ def subscribe(subcount, request, subscriber, gpu_list, form, email, phone):
                                     'is in stock.')
         print("subscriber created. subscriptions added")
 
-    # if subscriber already exists then re-subscribe them
+    # re-subscribe existing subscriber
     elif subcount == 1:
         # if subscriber added a phone or email on resubscribe but previously did not have one
         if subscriber[0].email == email and subscriber[0].phone != phone and phone != '':
@@ -126,7 +127,7 @@ def subscribe(subcount, request, subscriber, gpu_list, form, email, phone):
 
         print("subscribers subscriptions updated")
 
-    # if subscriber already exists then re-subscribe them
+    # re-subscribe existing subscriber that previously subscribed with phone and email separately
     elif subcount == 2:
         # delete existing subscriptions
         for sub in subscriber:
