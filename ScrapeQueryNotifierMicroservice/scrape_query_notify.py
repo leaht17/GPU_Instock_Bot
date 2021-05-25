@@ -213,7 +213,7 @@ def query_module(url):
         # gpus_gpu: 3 columns: gpu_id, URL, alias (plain english name)
         psql_select_query = 'SELECT DISTINCT subscribers.email, subscribers.phone FROM gpus_gpu as gpus, subscribers_subscriber as subscribers, subscriptions_subscription as subscriptions WHERE subscriptions.sub_gpu_id = gpus.id AND subscriptions.sub_subscriber_id = subscribers.id AND gpus.url = \'' + url + '\';'
         cur.execute(psql_select_query)
-        row = cur.fetchone() #returns tuple
+        row = cur.fetchone() # returns tuple
 
         while row is not None:
             # checks if string is empty, users can opt out of either notifying method
@@ -371,7 +371,7 @@ def main():
     # See http://twil.io/secure
     # account_sid = os.environ["AC9d5de46a73c27da46f9c0de98f668e20"]
     # auth_token = os.environ['0000ab4bffd746f96c75e19fe9a52079']
-    client = Client('AC9d5de46a73c27da46f9c0de98f668e20', '02bd30127b941ad3f93b80a54bcbd731') #hardcode test
+    client = Client('AC9d5de46a73c27da46f9c0de98f668e20', '02bd30127b941ad3f93b80a54bcbd731') # hardcode test
 
     # Loop through the URLS and check individually if each is in stock
     while RUNNING:
