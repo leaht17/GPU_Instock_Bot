@@ -4,7 +4,7 @@ from gpus.models import GPU
 from subscribers.models import Subscriber
 from phonenumber_field.formfields import PhoneNumberField
 
-
+# The form that takes in user contact info and selected GPUs to subscribe to.
 class SubscriptionForm(ModelForm):  # directly populate model with form
     email = EmailField(required=False)
     phone = PhoneNumberField(required=False)
