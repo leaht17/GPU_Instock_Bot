@@ -1,33 +1,18 @@
 from django.shortcuts import render
-
-# Create your views here.
-from django.shortcuts import render
 from .forms import SubscriptionForm
 from django.http import HttpResponseRedirect
-
-
-# Create your views here.
 from .models import Subscriber
 
-
+# Creates Subscription View Class passing in user request from submission
+# Args:
+#   request: data from form submission on subscription view
 def subscriptionview(request):
     if request.method == 'POST':
-        # create a form instance and populate it with data from the request:
+        # Create a form instance and populate it with data from the request:
         form = SubscriptionForm(request.POST)
-        # check whether it's valid:
+
+        # Check whether it's valid:
         if form.is_valid():
-            # process the data in form.cleaned_data as required
-            # ...
-            # redirect to a new URL:
-            # counter = 0
-            # gpu_list = form.cleaned_data['gpus']
-            # email = form.cleaned_data['email']
-            # phone = form.cleaned_data['phone']
-            # print(email)
-            # print(phone)
-            # print(gpu_list)
-            # for gpu in gpu_list:
-            #     gpu.save()
             form.save()
             return HttpResponseRedirect('/')
 
