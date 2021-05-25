@@ -8,8 +8,8 @@ from gpus.models import GPU
 # Args:
 #   Model: current model to be populated
 class Subscriber(models.Model):
-    email = models.EmailField(unique=True)
-    phone = PhoneNumberField(unique=True)
+    email = models.EmailField()
+    phone = PhoneNumberField()
     gpus = models.ManyToManyField(GPU, through='subscriptions.Subscription')
 
     # Provides phone of subscriber object
