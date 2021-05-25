@@ -84,7 +84,7 @@ def subscriptionview(request):
             # if subscriber already exists then re-subscribe them
             elif subcount == 1:
 
-                # update user info if necessary
+                # if subscriber added a phone or email on resubscribe but previously did not have one then
                 if subscriber[0].email == email and subscriber[0].phone != phone and phone != '':
                     subscriber.update(phone=phone)
                     messages.success(request, 'Your phone number was updated upon re-subscription')
@@ -111,12 +111,13 @@ def subscriptionview(request):
                     Subscription.objects.filter(sub_subscriber=sub).delete()
 
                 # merge subscriber info
-                subscriber.delete()
+                subscriber[0].delete()
+                subscriber[1].delete()
 
                 # add new subscriptions
+                new_subscriber = Subscriber.objects.create(email=email, phone=phone)
                 for gpu in gpu_list:
-                    Subscription.objects.create(sub_subscriber=Subscriber.objects.create(email=email, phone=phone),
-                                                sub_gpu=gpu)
+                    Subscription.objects.create(sub_subscriber=new_subscriber, sub_gpu=gpu)
                 messages.success(request, 'You are now re-subscribed! We will notify you when one of your re-selected '
                                           'GPUs is in stock.')
 
