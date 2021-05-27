@@ -22,19 +22,6 @@ import copy
 
 RUNNING = True
 
-# Notes:
-    # Text module:
-        # TODO: Make sure the Django form only accepts phone numbers that are 10 digits in length?
-        #       Also we will prepend the +1, so user just needs to add a 10 digit us number i.e. 4251234567
-        # TODO: What happens if the number is invalid? Does the program fail? Test this out
-    # Email module:
-        # Implement this
-    # Query module:
-        # TODO: finish external python program testing and paste the query module in
-        # TODO: check against
-
-
-
 # The list of Best Buy GPU URLs that will be checked for stock
 URLS = [
         "https://www.bestbuy.com/site/pny-geforce-gt-710-2gb-pci-express-2-0-graphics-card-black/5092306.p?skuId=5092306", #this is our test url
@@ -164,8 +151,13 @@ def handler(signal_received, frame):
 ######################################################################################################
 ######################################################################################################
 
-# args: Takes in chrome webdriver and a Best Buy GPU URL to check for stock
-# returns: True if the GPU of the URL passed in is in stock & the name of the GPU, False otherwise
+# Checks if the given GPU is in stock or not.
+# args: 
+# - browser: Chrome webdriver.
+# - url: Best Buy GPU URL to check for stock.
+# returns: 
+# - True if the GPU of the URL passed in is in stock & the name of the GPU.
+# - False otherwise.
 def scraper(browser, url):
     global RUNNING
     try:
@@ -195,11 +187,12 @@ def scraper(browser, url):
 ######################################################################################################
 ######################################################################################################
 
-# TODO: this module is 90% done, but it has not been tested and place holder variables need to be replaced with the correct variable
-
-# args: takes in a url linking to a Best Buy GPU
-# returns: a list of emails and phone numbers from the db that were
-#          linked to wanting to be notified about this specific GPU being in stock
+# Queries the database for users that are subscribed to a certain GPU.
+# args: 
+# - url: URL associated with a Best Buy GPU.
+# returns: 
+# - A list of emails and phone numbers from the db that were
+#   linked to wanting to be notified about this specific GPU being in stock.
 def query_module(url):
     """ query subscribers matching the url """
     conn = None
@@ -208,27 +201,26 @@ def query_module(url):
 
     try:
         # Initialize db stuff
-        conn = psycopg2.connect(database="gpuinstockbotdb", user="admin", password="superuser", host="127.0.0.1", port="5432") # TODO: put the right variables here
+        conn = psycopg2.connect(database="gpuinstockbotdb", user="admin", password="superuser", host="127.0.0.1", port="5432")
         print("Database opened successfully")
 
         # Open a cursor to perform database operations
         cur = conn.cursor()
 
         # Query the database and obtain data as Python objects
-        # TODO: change INSERT_DATABASE_NAME_HERE to whatever the name of the database is
         # subscribers_subscriber: 3 columns: sub_id, email & phone
         # subscriptions_subscription: 3  columns: sus_id, gpu_id, sub_id
         # gpus_gpu: 3 columns: gpu_id, URL, alias (plain english name)
         psql_select_query = 'SELECT DISTINCT subscribers.email, subscribers.phone FROM gpus_gpu as gpus, subscribers_subscriber as subscribers, subscriptions_subscription as subscriptions WHERE subscriptions.sub_gpu_id = gpus.id AND subscriptions.sub_subscriber_id = subscribers.id AND gpus.url = \'' + url + '\';'
         cur.execute(psql_select_query)
-        row = cur.fetchone() #returns tuple
+        row = cur.fetchone() # returns tuple
 
         while row is not None:
-        #logic below just checks if string is empty, users can opt out of either notifying method
-            if len(row[0]) != 0: # this just checks if email is empty
+            # checks if string is empty, users can opt out of either notifying method
+            if len(row[0]) != 0: # checks if email is empty
                 list_of_emails.append(copy.deepcopy(row[0]))
 
-            if len(row[1]) != 0: # likewise if phone_number is empty
+            if len(row[1]) != 0: # checks if phone_number is empty
                 list_of_phone_numbers.append(copy.deepcopy(row[1]))
 
             row = cur.fetchone()
@@ -245,14 +237,17 @@ def query_module(url):
 ######################################################################################################
 ######################################################################################################
 
-# args: takes in a url linking to a Best Buy GPU
-#       a stock_message containing the GPU sku_title and letting them know it's in stock
-#       twilio Client
-#       a phone number to send the in stock message to
-#       Magic number for testing is : '+15005550006'
-#       Our live phone number: +16782632233
+# Creates and sends a text message.
+# args: 
+# - url: URL associated with a Best Buy GPU.
+# - stock_message: Message containing the GPU sku_title and lets users know it's in stock.
+# - client: Twilio Client.
+# - phone_number: A phone number to send the in stock message to.
+# - sender_phone_num: The phone number we're sending the message from.
 def send_text(url, stock_message, client, phone_number, sender_phone_num = '+15005550006'):
     # A test number to set phone number to: +12532859052
+    # Magic sender number for testing: +15005550006
+    # Our live sender phone number: +16782632233
 
     message = client.messages \
                     .create(
@@ -265,16 +260,15 @@ def send_text(url, stock_message, client, phone_number, sender_phone_num = '+150
 ######################################################################################################
 ######################################################################################################
 
-#Send an email message.
-#Args:
-#service: Authorized Gmail API service instance.
-#user_id: User's email address. The special value "me"
-#       can be used to indicate the authenticated user.
-#       message: Message to be sent
-#        url: takes in a url linking to a Best Buy GPU
-#        stock_message: a stock_message containing the GPU sku_title and letting them know it's in stock
-#    Returns: Sent Message.
-
+# Send an email message.
+# args: 
+# - service: Authorized Gmail API service instance.
+# - user_id: User's email address. The special value "me" indicates the authenticated user.
+# - message: Message to be sent
+# - url: URL associated with a Best Buy GPU.
+# - stock_message: A stock_message containing the GPU sku_title and letting them know it's in stock.
+# returns: 
+# - Sent email message.
 def send_email(service, url, stock_message, recipient, user_id = 'me'):
     message = create_email(recipient, "GPU Instock Notification", stock_message + "\n\n" + url)
     try:
@@ -285,23 +279,15 @@ def send_email(service, url, stock_message, recipient, user_id = 'me'):
     except errors.HttpError or error:
         print('An error occurred: %s' % error)
 
-#Encode in base64url strings
-#args: sender: takes in string of sender (keep default)
-#       to: recipient email string
-#       subject: string with subject of email
-#       message_text: string with body text
+# Creates an email message.
+# args: 
+# - sender: Email address of sender (keep default).
+# - to: Email addresss of recipient.
+# - subject: Subject of email.
+# - message_text: Body text of email message.
+# returns:
+# - Object containing a base64url encoded email object.
 def create_email(to, subject, message_text, sender = "gpuinstockbot@gmail.com"):
-  """Create a message for an email.
-
-  Args:
-    sender: Email address of the sender.
-    to: Email address of the receiver.
-    subject: The subject of the email message.
-    message_text: The text of the email message.
-
-  Returns:
-    An object containing a base64url encoded email object.
-  """
   message = MIMEText(message_text)
   message['to'] = to
   message['from'] = sender
@@ -311,13 +297,15 @@ def create_email(to, subject, message_text, sender = "gpuinstockbot@gmail.com"):
 ######################################################################################################
 ######################################################################################################
 
-# sends notifies from the emails and phone numbers of the gpu being in stock
-# args: list of email addresses
-#       list of phone numbers
-#       url: the Best Buy URL to link within the message body
-#       stock_message: a stock_message containing the GPU sku_title and letting them know it's in stock
-#       client: for twilio client connection
-#       service: from gmail connection establishment
+# Notifies emails and phone numbers of the gpu being in stock.
+# args: 
+# - service: From gmail connection establishment.
+# - list_of_emails: Email addresses to notify.
+# - list_of_phone_numbers: Phone numbers to notify.
+# - url: The Best Buy URL to link within the message body.
+# - stock_message: A stock message containing the GPU sku_title and letting them know it's in stock.
+# - client: Twilio client.
+# - test: Flag for testing.
 def notifier_module(service, list_of_emails, list_of_phone_numbers, url, stock_message, client, test=False):
     # Loop through and send the emails
     for email in list_of_emails:
@@ -331,13 +319,11 @@ def notifier_module(service, list_of_emails, list_of_phone_numbers, url, stock_m
         for phone_number in list_of_phone_numbers:
             send_text(url, stock_message, client, phone_number, sender_phone_num='+16782632233')
 
-
-
 ######################################################################################################
 ######################################################################################################
 
 def main():
-    # Initialize scraper stuff
+    # Initialize scraper information
     global RUNNING
     headless = True
 
@@ -350,16 +336,16 @@ def main():
     print("Running in background, first page may take longer to load than subsequent pages")
     print("Press CTRL-C to exit")
 
-    # Populate a still_in_stock dictionary to keep track of what is in stock so we do not send repeat emails and/or texts
+    # Populate a still_in_stock dictionary to keep track of what is in stock so we do not send 
+    # repeat emails and/or texts
     is_msg_for_gpu_sent_for_this_stock_cycle = {}
     for url in URLS:
         is_msg_for_gpu_sent_for_this_stock_cycle[url] = False
 
-    # Initialize gmail stuff
+    # Initialize gmail information
     creds = None
     # The file token.json stores the user's access and refresh tokens, and is
-    # created automatically when the authorization flow completes for the first
-    # time.
+    # created automatically when the authorization flow completes for the first time.
     if os.path.exists('token.json'):
         creds = Credentials.from_authorized_user_file('token.json', SCOPES)
     # If there are no (valid) credentials available, let the user log in.
@@ -376,20 +362,18 @@ def main():
 
     service = build('gmail', 'v1', credentials=creds)
 
-    # Initialize db stuff
-    con = psycopg2.connect(database="postgres", user="postgres", password="", host="127.0.0.1", port="5432") # TODO what is user and password once  I set up
+    # Initialize db information
+    con = psycopg2.connect(database="postgres", user="postgres", password="", host="127.0.0.1", port="5432")
     print("Database opened successfully")
 
     # Initialize twilio
     # Your Account Sid and Auth Token from twilio.com/console and set the environment variables.
     # See http://twil.io/secure
-    #account_sid = os.environ["AC9d5de46a73c27da46f9c0de98f668e20"]
-    #auth_token = os.environ['0000ab4bffd746f96c75e19fe9a52079']
-    client = Client('AC9d5de46a73c27da46f9c0de98f668e20', '02bd30127b941ad3f93b80a54bcbd731') #hardcode test
+    # account_sid = os.environ["AC9d5de46a73c27da46f9c0de98f668e20"]
+    # auth_token = os.environ['0000ab4bffd746f96c75e19fe9a52079']
+    client = Client('AC9d5de46a73c27da46f9c0de98f668e20', '02bd30127b941ad3f93b80a54bcbd731') # hardcode test
 
     # Loop through the URLS and check individually if each is in stock
-
-
     while RUNNING:
         for url in URLS:
             throttle = randint(7, 14) # This can partially help against being detected as a bot
@@ -399,36 +383,33 @@ def main():
             try:
                 is_gpu_in_stock, stock_message = scraper(browser, url)
 
-
-            # I will need to refactor later to deal with cntrl + c behavior when the program is running i.e.
+            # I will need to refactor later to deal with cntrl + c behavior when the program is running, 
             # i.e. instead of just a clean break, it will quickly print the remaining URL's before exiting.
             except Exception:
                 pass
 
             # Only going to query and send email, text notifications if
-            # 1. we have not already sent them a msg for this stock cycle (i.e. in stock, send msg, still in stock on next loop pass, don't send msg)
+            # 1. we have not already sent them a msg for this stock cycle 
+            #    (i.e. in stock, send msg, still in stock on next loop pass, don't send msg)
             # 2. the gpu is actually in stock for this specific URL
             if (not is_msg_for_gpu_sent_for_this_stock_cycle[url] and is_gpu_in_stock):
-
 
                 list_of_emails, list_of_phone_numbers = query_module(url)
 
                 # Send the messages to notify the users that this GPU is in stock
                 notifier_module(service, list_of_emails, list_of_phone_numbers, url, stock_message, client)
 
-
                 # Set to true so we know not to msg them multiple times for this stock cycle
                 is_msg_for_gpu_sent_for_this_stock_cycle[url] = True
-
 
             # Set to false so we will know to send msg on the next stock cycle when GPU is in stock
             if (not is_gpu_in_stock):
                 is_msg_for_gpu_sent_for_this_stock_cycle[url] = False
 
-
         if RUNNING:
                 print(f"Sleeping for {throttle} seconds...")
                 time.sleep(throttle)
+
     # Exit cleanly
     browser.stop_client()
     browser.quit()
