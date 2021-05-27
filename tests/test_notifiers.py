@@ -58,13 +58,28 @@ class TestScraper(unittest.TestCase):
         self.assertRaises(twilio.base.exceptions.TwilioRestException, \
             send_text, url, stock_message, self.test_client, invalid_phone_number)
         
-    # note: query_module() error - could not connect to server
-    # def test_query_module(self):
-    #     """ Tests if retrieves correct emails/phone numbers from database. """
-    #     test_query_module not yet implemented
-    #     list_of_emails, list_of_phone_numbers = query_module("fake_url")
-    #     self.assertEqual(list_of_emails, [])
-    #     self.assertEqual(list_of_phone_numbers, [])
+    """ Tests if creates email message in expected MIMEText format."""
+    def test_email_create_message(self):
+        subject = "GPU Instock Bot Test Email"
+        message_text = "test_email_create_message has been run"
+        sent_email = create_email("to", subject, message_text)
+        result = base64.urlsafe_b64decode(sent_email['raw']).decode('utf-8')
+        expected = ("Content-Type: text/plain; charset=\"us-ascii\"\n"
+            "MIME-Version: 1.0\n"
+            "Content-Transfer-Encoding: 7bit\n"
+            "to: to\n"
+            "from: gpuinstockbot@gmail.com\n"
+            "subject: GPU Instock Bot Test Email\n"
+            "\n"
+            "test_email_create_message has been run")
+        self.assertEqual(result, expected)
+
+
+    """ Tests if retrieves correct emails/phone numbers from database. """
+    def test_query_module(self):
+        list_of_emails, list_of_phone_numbers = query_module("http://www.fake_url.com")
+        self.assertEqual(list_of_emails, [])
+        self.assertEqual(list_of_phone_numbers, [])
 
 if __name__ == '__main__':
     unittest.main()
