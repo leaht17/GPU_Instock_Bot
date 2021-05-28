@@ -204,7 +204,7 @@ def query_module(url):
 
     try:
         # Initialize db stuff
-        db_params = config('dbsetup.ini', 'database')
+        db_params = config('database.ini', 'database')
         conn = psycopg2.connect(db_params['database'], db_params['user'], db_params['password'], db_params['host'], db_params['port'])
         print("Database opened successfully")
 
