@@ -319,9 +319,12 @@ def notifier_module(service, list_of_emails, list_of_phone_numbers, url, stock_m
         for phone_number in list_of_phone_numbers:
             send_text(url, stock_message, client, phone_number)
     else:
+        # Get sender phone number from twilio ini file
+        sender_phone_num = config('twilio.ini', 'twilio')['sender_phone_num']
+        
         # Loop through and send the text messages
         for phone_number in list_of_phone_numbers:
-            send_text(url, stock_message, client, phone_number, sender_phone_num='+16782632233')
+            send_text(url, stock_message, client, phone_number, sender_phone_num)
 
 ######################################################################################################
 ######################################################################################################
@@ -375,7 +378,9 @@ def main():
     # See http://twil.io/secure
     # account_sid = os.environ["AC9d5de46a73c27da46f9c0de98f668e20"]
     # auth_token = os.environ['0000ab4bffd746f96c75e19fe9a52079']
-    client = Client('AC9d5de46a73c27da46f9c0de98f668e20', '02bd30127b941ad3f93b80a54bcbd731') # hardcode test
+    
+    twilio_params = config('setup.ini', 'twilio')
+    client = Client(twilio_params['account_sid'], twilio_params['auth_token'])
 
     # Loop through the URLS and check individually if each is in stock
     while RUNNING:
