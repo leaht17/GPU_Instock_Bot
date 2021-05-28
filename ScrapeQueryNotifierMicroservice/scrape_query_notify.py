@@ -20,6 +20,9 @@ from email.mime.text import MIMEText
 import base64
 import copy
 
+# import config for the database and twilio values
+from config import config
+
 RUNNING = True
 
 # The list of Best Buy GPU URLs that will be checked for stock
@@ -201,7 +204,8 @@ def query_module(url):
 
     try:
         # Initialize db stuff
-        conn = psycopg2.connect(database="gpuinstockbotdb", user="admin", password="superuser", host="127.0.0.1", port="5432")
+        db_params = config('dbsetup.ini', 'database')
+        conn = psycopg2.connect(db_params['database'], db_params['user'], db_params['password'], db_params['host'], db_params['port'])
         print("Database opened successfully")
 
         # Open a cursor to perform database operations
