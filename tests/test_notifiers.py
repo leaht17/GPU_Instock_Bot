@@ -1,3 +1,4 @@
+from ScrapeQueryNotifierMicroservice.scrape_query_notify import email_body
 import unittest
 import sys
 import os
@@ -18,11 +19,6 @@ class TestScraper(unittest.TestCase):
         # Twilio client set up using live credentials (since testing functionality is limited)
         self.client = Client('AC9d5de46a73c27da46f9c0de98f668e20', '0000ab4bffd746f96c75e19fe9a52079')
         self.test_client = Client('AC56538a2f99e2863f36cdea0143417e2c', '2ffe0243e02fbaf672773e32dd260ccc')
-
-    # TODO: add tests for email notifications after implementation is done
-    # """ Tests if sends correct email message. """
-    # def test_email_send_message(self):
-    #     print("test_email_send_message not yet implemented")
 
     """ Tests if correctly sends text message. """
     def test_send_text(self):
@@ -60,20 +56,34 @@ class TestScraper(unittest.TestCase):
         
     """ Tests if creates email message in expected MIMEText format."""
     def test_email_create_message(self):
-        subject = "GPU Instock Bot Test Email"
-        message_text = "test_email_create_message has been run"
-        sent_email = create_email("to", subject, message_text)
-        result = base64.urlsafe_b64decode(sent_email['raw']).decode('utf-8')
-        expected = ("Content-Type: text/plain; charset=\"us-ascii\"\n"
+        gmail_username = "gpuinstockbot@gmail.com"
+        recipient_email = "gpuinstockbot@gmail.com"
+        stock_message = "test_email_create_message has been run"
+        url = "http://www.testurl.com"
+        
+        result = email_body(gmail_username, recipient_email, stock_message, url)
+        message_start_index = 201 + len(gmail_username) + len(recipient_email)
+        message = str(result)[message_start_index:-46] # gets html message
+        
+        expected_message = ("\nContent-Type: text/html; charset=\"us-ascii\"\n"
             "MIME-Version: 1.0\n"
             "Content-Transfer-Encoding: 7bit\n"
-            "to: to\n"
-            "from: gpuinstockbot@gmail.com\n"
-            "subject: GPU Instock Bot Test Email\n"
             "\n"
-            "test_email_create_message has been run")
-        self.assertEqual(result, expected)
-
+            "    <html>\n"
+            "        <body>\n"
+            "        <p>\n"
+            "            Your item has been restocked at BestBuy<br><br>\n"
+            "\n"
+            "            test_email_create_message has been run<br>\n"
+            "\n"
+            "            <a href=\"http://www.testurl.com\">http://www.testurl.com</a>\n"
+            "        </p>\n"
+            "        </body>\n"
+            "    </html>\n")
+    
+        self.assertEqual(result.get("from"), gmail_username)
+        self.assertEqual(result.get("to"), recipient_email)
+        self.assertEqual(message, expected_message)
 
     """ Tests if retrieves correct emails/phone numbers from database. """
     def test_query_module(self):

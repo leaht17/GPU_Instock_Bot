@@ -24,6 +24,8 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
 # import config for the database and twilio values
+import sys
+sys.path.append(os.path.dirname(os.path.abspath('ScrapeQueryNotifierMicroservice/config.py')))
 from config import config
 
 RUNNING = True
@@ -291,29 +293,37 @@ def send_email(url, stock_message, recipient_email):
         server.login(GMAIL_USERNAME, GMAIL_PASSWORD)
         server.sendmail(GMAIL_USERNAME, recipient_email, email_message.as_string())
 
+# Creates an email message.
+# args: 
+# - gmail_username: Email address of sender (keep default).
+# - recipient_email: Email addresss of recipient.
+# - stock_message: Body text of email message.
+# - url: URL for GPU.
+# returns:
+# - MIMEText email message.
 def email_body(gmail_username, recipient_email, stock_message, url):
-        message = MIMEMultipart("alternative")
-        message["Subject"] = "Item found to be in stock at BestBuy!"
-        message["From"] = gmail_username
-        message["To"] = recipient_email
-        html = f"""\
-        <html>
-          <body>
-            <p>
-                Your item has been restocked at BestBuy<br><br>
+    message = MIMEMultipart("alternative")
+    message["Subject"] = "Item found to be in stock at BestBuy!"
+    message["From"] = gmail_username
+    message["To"] = recipient_email
+    html = f"""\
+    <html>
+        <body>
+        <p>
+            Your item has been restocked at BestBuy<br><br>
 
-                {stock_message}<br>
+            {stock_message}<br>
 
-               <a href="{url}">{url}</a>
-            </p>
-          </body>
-        </html>
-        """
+            <a href="{url}">{url}</a>
+        </p>
+        </body>
+    </html>
+    """
 
-        # Attach message to email
-        part1 = MIMEText(html, "html")
-        message.attach(part1)
-        return message
+    # Attach message to email
+    part1 = MIMEText(html, "html")
+    message.attach(part1)
+    return message
 
 
 ######################################################################################################
